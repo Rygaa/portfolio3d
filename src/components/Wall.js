@@ -23,7 +23,7 @@ class Wall {
   initThreeMesh(textureURL, size, position) {
     const loader = new THREE.TextureLoader();
     const boxTexture = loader.load(textureURL);
-    const texturedMaterial = new THREE.MeshPhongMaterial({ map: boxTexture });
+    const texturedMaterial = new THREE.MeshStandardMaterial({ map: boxTexture });
     const texturedBoxGeometry = new THREE.BoxGeometry(size.width, size.height, size.depth);
 
     this.wallMesh = new THREE.Mesh(texturedBoxGeometry, texturedMaterial);

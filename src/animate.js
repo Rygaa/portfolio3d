@@ -10,7 +10,7 @@ document.getElementById("lookAtVideoBtn").addEventListener("click", () => {
 });
 
 export function animate() {
-  requestAnimationFrame(animate);
+  // requestAnimationFrame(animate);
 
   // Get the direction the camera is facing for movement purposes
   const cameraDirection = new THREE.Vector3();

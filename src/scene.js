@@ -25,10 +25,11 @@ scene = new THREE.Scene();
 world = new CANNON.World();
 world.gravity.set(0, -9.82, 0);
 camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.y = 5;
-camera.position.z = 7;
-camera.lookAt(0, 1, 0);
-myPlayer = new Player({ x: 5, y: 1, z: 0 }, 0xff0000, scene, world);
+camera.position.y = 2;
+camera.position.x = 3;
+camera.position.z = 9;
+camera.lookAt(8, 1, 0);
+myPlayer = new Player({ x: 4, y: 1, z: 1 }, 0xff0000, scene, world);
 myFloor = new Floor("./src/assets/grass.jpg", undefined, undefined, scene, world);
 myWall = new Wall("./src/assets/wall-2.jpg", undefined, undefined, scene, world);
 
@@ -94,24 +95,25 @@ const halfDepth = ROOM_SIZE.depth / 2 - 0.5;
 const ledStripDimensions = { width: 1, height: 0.1, depth: 0.1 };
 
 
-const LedStripNumber = 4;
-const step = ROOM_SIZE.width / 3 - ledStripDimensions.width / ((LedStripNumber - 1) / 2);
-new RectStrip(
-  { x: 7, y: 1, z: 0 },
-  undefined,
-  ledStripDimensions,
-  scene,
-  world
-);
-// for (let i = 0; i < 4; i++) {
-//   const xLocation = ROOM_SIZE.width / 2 - step * i - ledStripDimensions.width;
-//   new RectStrip(
-//     { x: xLocation, y: ROOM_SIZE.height - 1, z: halfDepth - 1 },
-//     undefined,
-//     ledStripDimensions,
-//     scene,
-//     world
-//   );
+const LedStripNumber = 9;
+const step = ROOM_SIZE.width / (LedStripNumber - 1) - ledStripDimensions.width / ((LedStripNumber - 1) / 2);
+// new RectStrip(
+//   { x: 7, y: 1, z: 0 },
+//   undefined,
+//   ledStripDimensions,
+//   scene,
+//   world
+// );
+for (let i = 0; i < LedStripNumber; i++) {
+  const xLocation = ROOM_SIZE.width / 2 - step * i - ledStripDimensions.width;
+  new RectStrip(
+    { x: xLocation, y: ROOM_SIZE.height - 1, z: halfDepth - 1 },
+    undefined,
+    ledStripDimensions,
+    scene,
+    world
+  );
+}
 
   // new LedStrip(
   //   { x: xLocation, y: ROOM_SIZE.height - 1, z: -halfDepth + 1 },

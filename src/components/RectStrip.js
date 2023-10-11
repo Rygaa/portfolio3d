@@ -41,26 +41,34 @@ class RectStrip {
     });
     this.stripMesh = new THREE.Mesh(stripGeometry, stripMaterial);
     this.stripMesh.position.set(position.x, position.y, position.z);
+    // this.stripMesh.visible = false;
     this.scene.add(this.stripMesh);
   }
 
   initLight(position, rotation, dimensions) {
-    const light = new THREE.RectAreaLight(0xffffff, 1, dimensions.width, dimensions.height);
-    this.scene.add(new RectAreaLightHelper(light));
-    light.position.set(position.x, position.y, position.z - 0.1);
-    light.rotation.z = rotation.z;
-    // light.rotation.y = 90;
-    // light.rotation.x = Math.PI / 4;
-    light.rotation.y += Math.PI;  // Add π radians to the current Y rotation
+    // Loop over the six faces of the box
+    const spacing = 0.001
+    const orientations = [
+      { rot: { x: -Math.PI / 2, y: 0, z: 0 }, offset: { x: 0, y: -(dimensions.depth / 2) - spacing, z: 0 }, width: dimensions.width, height: dimensions.height }, // bottom
+      { rot: { x: Math.PI / 2, y: 0, z: 0 }, offset: { x: 0, y: +(dimensions.depth / 2) + spacing, z: 0 }, width: dimensions.width, height: dimensions.height }, // top
+      { rot: { x: 0, y: 0, z: 0 }, offset: { x: 0, y: 0, z: -(dimensions.depth / 2) - spacing }, width: dimensions.width, height: dimensions.height }, // right
+      { rot: { x: 0, y: Math.PI, z: 0 }, offset: { x: 0, y: 0, z: +(dimensions.depth / 2) + spacing }, width: dimensions.width, height: dimensions.height }, // left
+      { rot: { x: 0, y: Math.PI / 2, z: 0 }, offset: { x: -(dimensions.width / 2) - spacing, y: 0, z: 0 }, width: dimensions.depth, height: dimensions.height }, // small-left
+      { rot: { x: 0, y: -Math.PI / 2, z: 0 }, offset: { x: +(dimensions.width / 2) + spacing, y: 0, z: 0 }, width: dimensions.depth, height: dimensions.height }, // small-right
+    ];
 
-    const targetPoint = new THREE.Vector3(
-      this.stripBody.position.x,
-      this.stripBody.position.y,
-      this.stripBody.position.z + 1
-    );
-    light.lookAt(targetPoint);
-
-    this.scene.add(light);
+    orientations.forEach(orientation => {
+      const light = new THREE.RectAreaLight(0xffffff, 10, orientation.width, orientation.height);
+      light.position.set(
+        position.x + orientation.offset.x,
+        position.y + orientation.offset.y,
+        position.z + orientation.offset.z
+      );
+      light.rotation.set(orientation.rot.x, orientation.rot.y, orientation.rot.z);
+      const lightHelper = new RectAreaLightHelper(light);
+      this.scene.add(lightHelper);
+      this.scene.add(light);
+    });
   }
 
   updateLightHelper() {
