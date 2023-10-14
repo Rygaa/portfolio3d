@@ -23,7 +23,7 @@ class Wall {
   initThreeMesh(textureURL, size, position) {
     const loader = new THREE.TextureLoader();
     const boxTexture = loader.load(textureURL);
-    const texturedMaterial = new THREE.MeshStandardMaterial({ map: boxTexture });
+    const texturedMaterial = new THREE.MeshStandardMaterial({ map: boxTexture, opacity: 1, transparent: false });
     const texturedBoxGeometry = new THREE.BoxGeometry(size.width, size.height, size.depth);
 
     this.wallMesh = new THREE.Mesh(texturedBoxGeometry, texturedMaterial);
@@ -32,7 +32,8 @@ class Wall {
     this.scene.add(this.wallMesh);
     this.wallMesh.castShadow = false;
     this.wallMesh.receiveShadow = false;
-
+    this.wallMesh.material.depthTest = false;
+    this.wallMesh.material.depthWrite = false;
   }
 
   initCannonBody(size, position) {
@@ -42,6 +43,11 @@ class Wall {
     this.wallBody.addShape(texturedBoxShape);
     this.wallBody.position.set(position.x, position.y, position.z);
     this.wallBody.material = cannonBoxMaterial;
+
+    this.wallBody.material.envMapIntensity = 0; // No reflection
+    this.wallBody.fixedRotation = true;
+    this.wallBody.updateMassProperties();
+
 
     this.world.addBody(this.wallBody);
   }

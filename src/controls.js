@@ -1,12 +1,14 @@
-
 export const controls = {
   moveForward: false,
   moveBackward: false,
   moveLeft: false,
   moveRight: false,
+  jump: false,
+  dejump: false,
 };
 
 document.addEventListener("keydown", (event) => {
+  console.log(event.code);
   switch (event.code) {
     case "KeyW":
       controls.moveForward = true;
@@ -19,6 +21,12 @@ document.addEventListener("keydown", (event) => {
       break;
     case "KeyD":
       controls.moveRight = true;
+      break;
+    case "Space":
+      controls.jump = true;
+      break;
+    case "ShiftLeft":
+      controls.dejump = true;
       break;
   }
 });
@@ -36,6 +44,12 @@ document.addEventListener("keyup", (event) => {
       break;
     case "KeyD":
       controls.moveRight = false;
+      break;
+    case "Space":
+      controls.jump = false;
+      break;
+    case "ShiftLeft":
+      controls.dejump = false;
       break;
   }
 });

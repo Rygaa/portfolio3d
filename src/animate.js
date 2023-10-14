@@ -1,6 +1,18 @@
 import { controls } from "./controls.js";
-import { camera, renderer, scene, videoPlane, myPlayer, myWall, world, leftWallStrip, rightWallStrip, backWallStrip, frontWallStrip } from "./scene.js";
-import * as THREE from 'three';
+import {
+  camera,
+  renderer,
+  scene,
+  videoPlane,
+  myPlayer,
+  myWall,
+  world,
+  leftWallStrip,
+  rightWallStrip,
+  backWallStrip,
+  frontWallStrip,
+} from "./scene.js";
+import * as THREE from "three";
 import * as CANNON from "https://cdn.jsdelivr.net/npm/cannon-es@latest/dist/cannon-es.min.js";
 
 const velocity = 0.1;
@@ -8,9 +20,11 @@ let lookAtVideo = false; // State variable to track camera's look direction
 document.getElementById("lookAtVideoBtn").addEventListener("click", () => {
   lookAtVideo = !lookAtVideo; // Toggle the lookAt state
 });
+let hasRenderedStatic = false;
+let i = 0;
 
 export function animate() {
-  // requestAnimationFrame(animate);
+  requestAnimationFrame(animate);
 
   // Get the direction the camera is facing for movement purposes
   const cameraDirection = new THREE.Vector3();
@@ -34,11 +48,16 @@ export function animate() {
   if (controls.moveRight) {
     myPlayer.updatePosition({ x: rightDirection.x * velocity, z: rightDirection.z * velocity });
   }
+  if (controls.jump) {
+    myPlayer.updatePosition({ y: velocity + 0.05 });
+    myPlayer.boxBody.mass = 0;
+  }
+  if (controls.dejump) {
+    myPlayer.updatePosition({ y: -velocity - 0.05 });
+    myPlayer.boxBody.mass = 0;
+  }
 
-
-
-
-  world.step(1 / 60);
+  world.step(1 / 120);
 
   myPlayer.updateMeshPositionFromPhysics();
 
@@ -54,5 +73,8 @@ export function animate() {
     camera.lookAt(videoPlane.position); // Look at the video
   }
 
+ 
   renderer.render(scene, camera);
+
+
 }

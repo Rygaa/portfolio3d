@@ -42,6 +42,10 @@ class RectStrip {
     this.stripMesh = new THREE.Mesh(stripGeometry, stripMaterial);
     this.stripMesh.position.set(position.x, position.y, position.z);
     // this.stripMesh.visible = false;
+
+    this.stripMesh.material.depthTest = false;
+    this.stripMesh.material.depthWrite = false;
+
     this.scene.add(this.stripMesh);
   }
 
@@ -58,7 +62,7 @@ class RectStrip {
     ];
 
     orientations.forEach(orientation => {
-      const light = new THREE.RectAreaLight(0xffffff, 10, orientation.width, orientation.height);
+      const light = new THREE.RectAreaLight(0xffffff, 1, orientation.width, orientation.height);
       light.position.set(
         position.x + orientation.offset.x,
         position.y + orientation.offset.y,

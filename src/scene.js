@@ -57,33 +57,62 @@ videoPlane.position.set(0, 2, -5);
 scene.add(videoPlane);
 
 // Constants for room dimensions
+// const ROOM_SIZE = {
+//   width: 20,
+//   height: 10,
+//   depth: 20,
+// };
+
+// const leftWallPosition = { x: -ROOM_SIZE.width / 2, y: ROOM_SIZE.height / 2, z: 0 };
+// const leftWallSize = { width: 1, height: ROOM_SIZE.height, depth: ROOM_SIZE.depth };
+// const leftWall = new Wall("./src/assets/wall-2.jpg", leftWallPosition, leftWallSize, scene, world);
+
+// const rightWallPosition = { x: ROOM_SIZE.width / 2, y: ROOM_SIZE.height / 2, z: 0 };
+// const rightWall = new Wall("./src/assets/wall-2.jpg", rightWallPosition, leftWallSize, scene, world); // Reuse leftWallSize because it's the same
+
+// const frontWallPosition = { x: 0, y: ROOM_SIZE.height / 2, z: -ROOM_SIZE.depth / 2 };
+// const frontWallSize = { width: ROOM_SIZE.width, height: ROOM_SIZE.height, depth: 1 };
+// const frontWall = new Wall("./src/assets/wall-2.jpg", frontWallPosition, frontWallSize, scene, world);
+
+// const backWallPosition = { x: 0, y: ROOM_SIZE.height / 2, z: ROOM_SIZE.depth / 2 };
+// const backWall = new Wall("./src/assets/wall-2.jpg", backWallPosition, frontWallSize, scene, world); // Reuse frontWallSize because it's the same
+
+// const ceilingPosition = { x: 0, y: 16, z: 0 };
+// const ceilingSize = { width: ROOM_SIZE.width, height: ROOM_SIZE.height, depth: ROOM_SIZE.depth };
+// const ceiling = new Wall("./src/assets/wall-2.jpg", ceilingPosition, ceilingSize, scene, world);
+
+
+
 const ROOM_SIZE = {
-  width: 20,
-  height: 10,
-  depth: 20,
+  width: 10,
+  height: 6,
+  depth: 10,
 };
 
-const leftWallPosition = { x: -ROOM_SIZE.width / 2, y: ROOM_SIZE.height / 2, z: 0 };
-const leftWallSize = { width: 1, height: ROOM_SIZE.height, depth: ROOM_SIZE.depth };
+const wallThickness = 1;
+
+const leftWallSize = { width: wallThickness, height: ROOM_SIZE.height, depth: ROOM_SIZE.depth };
+const leftWallPosition = { x: -ROOM_SIZE.width / 2 + wallThickness / 2, y: ROOM_SIZE.height / 2, z: 0 };
 const leftWall = new Wall("./src/assets/wall-2.jpg", leftWallPosition, leftWallSize, scene, world);
 
-const rightWallPosition = { x: ROOM_SIZE.width / 2, y: ROOM_SIZE.height / 2, z: 0 };
-const rightWall = new Wall("./src/assets/wall-2.jpg", rightWallPosition, leftWallSize, scene, world); // Reuse leftWallSize because it's the same
+const rightWallPosition = { x: ROOM_SIZE.width / 2 - wallThickness / 2, y: ROOM_SIZE.height / 2, z: 0 };
+const rightWall = new Wall("./src/assets/wall-2.jpg", rightWallPosition, leftWallSize, scene, world);
 
-const frontWallPosition = { x: 0, y: ROOM_SIZE.height / 2, z: -ROOM_SIZE.depth / 2 };
-const frontWallSize = { width: ROOM_SIZE.width, height: ROOM_SIZE.height, depth: 1 };
+const frontWallSize = { width: ROOM_SIZE.width - 2 * wallThickness, height: ROOM_SIZE.height, depth: wallThickness };
+const frontWallPosition = { x: 0, y: ROOM_SIZE.height / 2, z: -ROOM_SIZE.depth / 2 + wallThickness / 2 };
 const frontWall = new Wall("./src/assets/wall-2.jpg", frontWallPosition, frontWallSize, scene, world);
 
-const backWallPosition = { x: 0, y: ROOM_SIZE.height / 2, z: ROOM_SIZE.depth / 2 };
-const backWall = new Wall("./src/assets/wall-2.jpg", backWallPosition, frontWallSize, scene, world); // Reuse frontWallSize because it's the same
+const backWallPosition = { x: 0, y: ROOM_SIZE.height / 2, z: ROOM_SIZE.depth / 2 - wallThickness / 2 };
+const backWall = new Wall("./src/assets/wall-2.jpg", backWallPosition, frontWallSize, scene, world);
 
-const ceilingPosition = { x: 0, y: ROOM_SIZE.height + 2.5, z: 0 };
-const ceilingSize = { width: ROOM_SIZE.width, height: 5, depth: ROOM_SIZE.depth };
+const ceilingSize = { width: ROOM_SIZE.width, height: wallThickness, depth: ROOM_SIZE.depth };
+const ceilingPosition = { x: 0, y: ROOM_SIZE.height + 4 / 2, z: 0 };
 const ceiling = new Wall("./src/assets/wall-2.jpg", ceilingPosition, ceilingSize, scene, world);
 
-// const ambientLight = new THREE.AmbientLight(0x404040, 0.1); // soft white light
-// scene.add(ambientLight);
-// ambientLight.castShadow = false;
+
+const ambientLight = new THREE.AmbientLight(0x404040, 1.5); // soft white light
+scene.add(ambientLight);
+ambientLight.castShadow = false;
 
 renderer.setClearColor(0x000000); // Set to black
 renderer.useLegacyLights = true;
@@ -91,11 +120,11 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.enabled = false;
 
 
-const halfDepth = ROOM_SIZE.depth / 2 - 0.5;
-const ledStripDimensions = { width: 1, height: 0.1, depth: 0.1 };
+const halfDepth = ROOM_SIZE.depth / 2 - wallThickness;
+const ledStripDimensions = { width: ROOM_SIZE.width - wallThickness * 2, height: 0.1, depth: 0.1 };
 
 
-const LedStripNumber = 9;
+const LedStripNumber = 1;
 const step = ROOM_SIZE.width / (LedStripNumber - 1) - ledStripDimensions.width / ((LedStripNumber - 1) / 2);
 // new RectStrip(
 //   { x: 7, y: 1, z: 0 },
@@ -105,14 +134,14 @@ const step = ROOM_SIZE.width / (LedStripNumber - 1) - ledStripDimensions.width /
 //   world
 // );
 for (let i = 0; i < LedStripNumber; i++) {
-  const xLocation = ROOM_SIZE.width / 2 - step * i - ledStripDimensions.width;
-  new RectStrip(
-    { x: xLocation, y: ROOM_SIZE.height - 1, z: halfDepth - 1 },
-    undefined,
-    ledStripDimensions,
-    scene,
-    world
-  );
+  const xLocation = 0;
+  // new RectStrip(
+  //   { x: xLocation, y: ROOM_SIZE.height - 0.1, z: halfDepth - 0.1 },
+  //   undefined,
+  //   ledStripDimensions,
+  //   scene,
+  //   world
+  // );
 }
 
   // new LedStrip(
