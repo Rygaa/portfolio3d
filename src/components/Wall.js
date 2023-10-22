@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-
 import * as CANNON from "https://cdn.jsdelivr.net/npm/cannon-es@latest/dist/cannon-es.min.js";
 import { cannonBoxMaterial } from "../utils/variables.const.js";
 
@@ -23,36 +22,31 @@ class Wall {
   initThreeMesh(textureURL, size, position) {
     const loader = new THREE.TextureLoader();
     const boxTexture = loader.load(textureURL);
-    const texturedMaterial = new THREE.MeshStandardMaterial({ map: boxTexture, opacity: 1, transparent: false });
-    const texturedBoxGeometry = new THREE.BoxGeometry(size.width, size.height, size.depth);
+    
+    // Use MeshLambertMaterial for flat shading without reflections
+    const blockMaterial = new THREE.MeshStandardMaterial({ map: boxTexture });
+    const blockGeometry = new THREE.BoxGeometry(size.width, size.height, size.depth);
 
-    this.wallMesh = new THREE.Mesh(texturedBoxGeometry, texturedMaterial);
+    this.wallMesh = new THREE.Mesh(blockGeometry, blockMaterial);
     this.wallMesh.position.set(position.x, position.y, position.z);
 
     this.scene.add(this.wallMesh);
-    this.wallMesh.castShadow = false;
-    this.wallMesh.receiveShadow = false;
-    this.wallMesh.material.depthTest = false;
-    this.wallMesh.material.depthWrite = false;
+    this.wallMesh.castShadow = true; // Blocks in Minecraft can cast shadows
+    this.wallMesh.receiveShadow = true; 
   }
 
   initCannonBody(size, position) {
-    const texturedBoxShape = new CANNON.Box(new CANNON.Vec3(size.width / 2, size.height / 2, size.depth / 2)); // Cannon.js uses half-extents
+    const blockShape = new CANNON.Box(new CANNON.Vec3(size.width / 2, size.height / 2, size.depth / 2)); 
     this.wallBody = new CANNON.Body({ mass: 0, material: cannonBoxMaterial });
 
-    this.wallBody.addShape(texturedBoxShape);
+    this.wallBody.addShape(blockShape);
     this.wallBody.position.set(position.x, position.y, position.z);
-    this.wallBody.material = cannonBoxMaterial;
 
-    this.wallBody.material.envMapIntensity = 0; // No reflection
-    this.wallBody.fixedRotation = true;
-    this.wallBody.updateMassProperties();
-
+    // this.wallBody.fixedRotation = true;
+    // this.wallBody.updateMassProperties();
 
     this.world.addBody(this.wallBody);
   }
-
-  // Additional methods to update, interact with, or dispose of the wall can be added here
 }
 
 export default Wall;

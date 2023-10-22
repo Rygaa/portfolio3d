@@ -21,6 +21,8 @@ document.addEventListener(
 
 scene.add(pointerLockControls.getObject()); // Ad
 
-
+// 40$
+// 55$
+// 60$ - 30$
 
 animate();

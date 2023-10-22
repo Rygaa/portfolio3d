@@ -13,13 +13,26 @@ class Player {
     this.initThreeMesh(color);
   }
 
+  // initCannonBody(position) {
+  //   const boxShape = new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5));
+  //   this.boxBody = new CANNON.Body({ mass: 1, material: cannonBoxMaterial });
+  //   this.boxBody.addShape(boxShape);
+  //   this.boxBody.position.set(position.x, position.y, position.z);
+  //   this.world.addBody(this.boxBody);
+  // }
+
   initCannonBody(position) {
-    const boxShape = new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5));
+    const radius = 0.5;
+    const height = 1.0; // Adjust based on your player's height.
+    
+    const capsuleShape = new CANNON.Cylinder(radius, radius, height, 8); // 8 represents the number of segments in the cylinder.
+    const quat = new CANNON.Quaternion();
+    quat.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI/2); // Align the capsule upright
     this.boxBody = new CANNON.Body({ mass: 1, material: cannonBoxMaterial });
-    this.boxBody.addShape(boxShape);
+    this.boxBody.addShape(capsuleShape, new CANNON.Vec3(), quat); 
     this.boxBody.position.set(position.x, position.y, position.z);
     this.world.addBody(this.boxBody);
-  }
+}
 
   initThreeMesh(color) {
     const boxGeometry = new THREE.BoxGeometry(1, 1, 1);

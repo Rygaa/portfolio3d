@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import * as CANNON from "https://cdn.jsdelivr.net/npm/cannon-es@latest/dist/cannon-es.min.js";
 
 class Floor {
-  constructor(textureURL, size = { width: 20, height: 20 }, position = { x: 0, y: -0, z: 0 }, scene, world) {
+  constructor(textureURL, size = { width: 200, height: 200 }, position = { x: 0, y: -0, z: 0 }, scene, world) {
     this.floorMesh = null;
     this.groundBody = null;
     this.scene = scene, 

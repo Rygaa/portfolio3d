@@ -62,7 +62,7 @@ class RectStrip {
     ];
 
     orientations.forEach(orientation => {
-      const light = new THREE.RectAreaLight(0xffffff, 1, orientation.width, orientation.height);
+      const light = new THREE.RectAreaLight(0xffffff, 3, orientation.width, orientation.height);
       light.position.set(
         position.x + orientation.offset.x,
         position.y + orientation.offset.y,
