@@ -11,7 +11,6 @@ function loadComplexGLBModel(url, position = { x: 0, y: 0, z: 0 }, scene, world)
       if (child instanceof THREE.Mesh && child.geometry instanceof THREE.BufferGeometry) {
         const mesh = child.clone();
         scene.add(mesh);
-        console.log(child.material); // Log material properties
 
         // Calculate the bounding box of the mesh
         const boundingBox = new THREE.Box3().setFromObject(mesh);

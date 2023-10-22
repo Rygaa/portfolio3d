@@ -6,6 +6,7 @@ import {} from "./src/components/Player.js";
 import { animate } from "./src/animate.js";
 
 import { PointerLockControls } from "./src/utils/PointerLockControls.js"; // Adjust the path if you saved it in a subdirectory.
+import { the_first_walking } from "./src/scripts/the-first-walking.js";
 
 let pointerLockControls;
 
@@ -26,3 +27,4 @@ scene.add(pointerLockControls.getObject()); // Ad
 // 60$ - 30$
 
 animate();
+the_first_walking();

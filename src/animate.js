@@ -1,18 +1,5 @@
 import { controls } from "./controls.js";
-import {
-  camera,
-  renderer,
-  scene,
-  videoPlane,
-  myPlayer,
-  // myWall,
-  world,
-  leftWallStrip,
-  rightWallStrip,
-  backWallStrip,
-  frontWallStrip,
-  myFloor,
-} from "./scene.js";
+import { camera, renderer, scene, videoPlane, myPlayer, world, myFloor } from "./scene.js";
 import * as THREE from "three";
 import * as CANNON from "https://cdn.jsdelivr.net/npm/cannon-es@latest/dist/cannon-es.min.js";
 
@@ -21,10 +8,6 @@ let lookAtVideo = false; // State variable to track camera's look direction
 document.getElementById("lookAtVideoBtn").addEventListener("click", () => {
   lookAtVideo = !lookAtVideo; // Toggle the lookAt state
 });
-let hasRenderedStatic = false;
-let i = 0;
-let isOnGround = true; // To check if player is on the ground
-const jumpForce = new CANNON.Vec3(0, 5, 0); // Upward force for jumping. Adjust the value as needed.
 
 export function animate() {
   requestAnimationFrame(animate);
@@ -51,24 +34,14 @@ export function animate() {
   if (controls.moveRight) {
     myPlayer.updatePosition({ x: rightDirection.x * velocity, z: rightDirection.z * velocity });
   }
-  if (controls.jump && isOnGround) {
-    // myPlayer.boxBody.velocity.x = 0; // Zero out x velocity
-    // myPlayer.boxBody.velocity.z = 0; // Zero out z velocity
-    // myPlayer.boxBody.velocity.y = 5; // Adjust value as needed for jump height
-
-    isOnGround = false;
-  }
 
   world.step(1 / 120);
 
   myPlayer.updateMeshPositionFromPhysics();
 
-  // myWall.wallMesh.position.copy(myWall.wallBody.position);
-  // myWall.wallMesh.quaternion.copy(myWall.wallBody.quaternion);
-
   // Adjusting camera position to be above the box
   camera.position.x = myPlayer.boxMesh.position.x + 0;
-  camera.position.y = myPlayer.boxMesh.position.y + 0; // Above the box
+  camera.position.y = myPlayer.boxMesh.position.y + 0.5; // Above the box
   camera.position.z = myPlayer.boxMesh.position.z + 0;
 
   if (lookAtVideo) {
@@ -80,8 +53,5 @@ export function animate() {
 
 myPlayer.boxBody.addEventListener("collide", (event) => {
   if (event.body === myFloor.groundBody) {
-    // replace 'groundBody' with your ground's physics body
-    isOnGround = true;
-    console.log(event.body);
   }
 });
