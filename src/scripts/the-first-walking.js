@@ -2,54 +2,73 @@ import { camera, myPlayer, videoPlane } from "../scene";
 import * as THREE from "three";
 import { world } from "../scene";
 
-let startQuaternion = new THREE.Quaternion().copy(camera.quaternion);
-let targetQuaternion = new THREE.Quaternion();
-let backwardQuaternion = new THREE.Quaternion(); // Initialize with your 'backward' quaternion
+// Initialize quaternions and variables
+const startQuaternion = new THREE.Quaternion().copy(camera.quaternion);
+const targetQuaternion = new THREE.Quaternion();
+const backwardQuaternion = new THREE.Quaternion();
+const slerpSpeed = 0.02;
+const slerpBackSpeed = 0.005;
+const expFactor = 2.5;
+
 let t = 0.0;
 let tBack = 0.0;
-const slerpSpeed = 0.02;
-const slerpBackSpeed = 0.005; // Slower slerp speed for looking back
-const expFactor = 2.5;
-videoPlane.rotate("right");
 let scriptFinished = false;
 let lookBack = false;
+let playerReachedLevel1 = false;
+let playerReachedLevel2 = false;
 
+videoPlane.rotate("right");
+
+// Function to control player walking and camera orientation
 export function the_first_walking() {
-  if (!scriptFinished || lookBack) {
-    requestAnimationFrame(the_first_walking);
-    world.step(1 / 120);
+  if (scriptFinished && !lookBack) return;
+  
+  requestAnimationFrame(the_first_walking);
+  world.step(1 / 120);
 
-    const reached = myPlayer.scriptedMove(10, 9);
-    videoPlane.syncPositionWithPlayer(myPlayer);
+  // Move player to different positions
+  if (!playerReachedLevel1) {
+    playerReachedLevel1 = myPlayer.scriptedMove(10, 9);
+  } else if (!playerReachedLevel2) {
+    playerReachedLevel2 = myPlayer.scriptedMove(10, 5);
+  }
 
-    camera.position.y = videoPlane.mesh.position.y;
+  videoPlane.syncPositionWithPlayer(myPlayer);
+  camera.position.y = videoPlane.mesh.position.y;
 
-    if (reached && !lookBack) {
-      camera.lookAt(videoPlane.mesh.position);
+  // Handle camera orientation when the player reaches first position
+  if (playerReachedLevel1 && !lookBack) {
+    handleLookAtVideoPlane();
+  }
 
-      if (t < 1.0) {
-        t += slerpSpeed;
-        const effectiveT = Math.pow(t, expFactor);
-        targetQuaternion.copy(camera.quaternion);
-        camera.quaternion.copy(startQuaternion);
-        camera.quaternion.slerp(targetQuaternion, effectiveT);
-      } else {
-        setTimeout(() => {
-          lookBack = true;
-        }, 1000);
-      }
-    }
+  // Handle camera orientation to look back
+  if (lookBack) {
+    handleLookBack();
+  }
+}
 
-    if (lookBack) {
-      if (tBack < 1.0) {
-        tBack += slerpBackSpeed; // Using slower speed for looking back
-        const effectiveTBack = Math.pow(tBack, expFactor);
-        startQuaternion.copy(camera.quaternion);
-        camera.quaternion.slerp(backwardQuaternion, effectiveTBack);
-      } else {
-        scriptFinished = true;
-        lookBack = false;
-      }
-    }
+function handleLookAtVideoPlane() {
+  camera.lookAt(videoPlane.mesh.position);
+  
+  if (t < 1.0) {
+    t += slerpSpeed;
+    const effectiveT = Math.pow(t, expFactor);
+    targetQuaternion.copy(camera.quaternion);
+    camera.quaternion.copy(startQuaternion);
+    camera.quaternion.slerp(targetQuaternion, effectiveT);
+  } else {
+    setTimeout(() => { lookBack = true; }, 1000);
+  }
+}
+
+function handleLookBack() {
+  if (tBack < 1.0) {
+    tBack += slerpBackSpeed;
+    const effectiveTBack = Math.pow(tBack, expFactor);
+    startQuaternion.copy(camera.quaternion);
+    camera.quaternion.slerp(backwardQuaternion, effectiveTBack);
+  } else {
+    scriptFinished = true;
+    lookBack = false;
   }
 }

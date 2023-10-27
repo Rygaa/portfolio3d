@@ -18,6 +18,8 @@ class VideoCharacter {
     video.play();
   }
 
+
+
   syncPositionWithPlayer(player) {
     this.mesh.position.set(player.boxBody.position.x - 2, 1, player.boxBody.position.z);
   }

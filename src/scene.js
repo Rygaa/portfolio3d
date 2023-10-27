@@ -28,11 +28,13 @@ camera.position.y = 2;
 camera.position.x = 3;
 camera.position.z = 9;
 camera.lookAt(8, 1, 0);
-myPlayer = new Player({ x: 10, y: 1, z: 10 }, 0xff0000, scene, world);
+myPlayer = new Player({ x: 10, y: 0.6, z: 10 }, 0xff0000, scene, world);
 myFloor = new Floor("./src/assets/grass.jpg", undefined, undefined, scene, world);
 myWall = null;
 
-renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+// renderer.setClearColor( 0x000000, 0 ); // the default
+
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
