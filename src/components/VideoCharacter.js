@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
 class VideoCharacter {
-  constructor(src, position, scene) {
+  constructor(position, scene) {
     const video = document.getElementById("myVideo");
     const videoTexture = new THREE.VideoTexture(video);
     videoTexture.minFilter = THREE.LinearFilter;

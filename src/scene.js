@@ -54,7 +54,7 @@ renderer.useLegacyLights = true;
 
 // const rewr = loadComplexGLBModel("./room.glb", { x: 100, y: 0, z: 100 }, scene, world);
 
-videoPlane = new VideoCharacter("path_to_your_video_file", { x: 0, y: 10, z: -2 }, scene);
+videoPlane = new VideoCharacter({ x: 0, y: 10, z: -2 }, scene);
 const yOffset = 2;  // Choose the offset that suits your needs
 camera.position.y = videoPlane.mesh.position.y + yOffset;
 const elevatedFOV = 90; // Choose a higher FOV value that suits your needs
