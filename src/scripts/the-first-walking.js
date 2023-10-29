@@ -6,7 +6,7 @@ import { world } from "../scene";
 const startQuaternion = new THREE.Quaternion().copy(camera.quaternion);
 const targetQuaternion = new THREE.Quaternion();
 const backwardQuaternion = new THREE.Quaternion();
-const slerpSpeed = 0.02;
+const slerpSpeed = 2.02;
 const slerpBackSpeed = 0.005;
 const expFactor = 2.5;
 
@@ -28,7 +28,7 @@ export function the_first_walking() {
 
   // Move player to different positions
   if (!playerReachedLevel1) {
-    playerReachedLevel1 = myPlayer.scriptedMove(10, 9);
+    playerReachedLevel1 = myPlayer.scriptedMove(10, 10);
   } else if (!playerReachedLevel2) {
     playerReachedLevel2 = myPlayer.scriptedMove(10, 5);
   }
@@ -57,7 +57,7 @@ function handleLookAtVideoPlane() {
     camera.quaternion.copy(startQuaternion);
     camera.quaternion.slerp(targetQuaternion, effectiveT);
   } else {
-    setTimeout(() => { lookBack = true; }, 1000);
+    setTimeout(() => { lookBack = false; }, 1000);
   }
 }
 

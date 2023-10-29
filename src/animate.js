@@ -40,7 +40,7 @@ export function animate() {
   myPlayer.updateMeshPositionFromPhysics();
 
   // Adjusting camera position to be above the box
-  camera.position.x = myPlayer.boxMesh.position.x + 0;
+  camera.position.x = myPlayer.boxMesh.position.x - 0;
   camera.position.y = myPlayer.boxMesh.position.y + 0.5; // Above the box
   camera.position.z = myPlayer.boxMesh.position.z + 0;
 
@@ -50,6 +50,7 @@ export function animate() {
 
   renderer.render(scene, camera);
 }
+
 
 myPlayer.boxBody.addEventListener("collide", (event) => {
   if (event.body === myFloor.groundBody) {
