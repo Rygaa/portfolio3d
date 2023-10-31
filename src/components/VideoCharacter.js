@@ -9,39 +9,68 @@ class VideoCharacter {
     videoTexture.format = THREE.RGBAFormat;
 
     const planeGeometry = new THREE.PlaneGeometry(2, 2); // Adjust size as needed
-    const planeMaterial = new THREE.MeshPhongMaterial({  map: videoTexture, side: THREE.DoubleSide, transparent: true });
-    planeMaterial.emissive.set(0x004040);  // This color will be added on top of the texture.
+    const planeMaterial = new THREE.MeshPhongMaterial({
+      map: videoTexture,
+      side: THREE.DoubleSide,
+      transparent: true,
+    });
 
+    const vertexShader = `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = vec4(position, 1.01);
+
+    }
+  `;
+
+    const fragmentShader = `
+    varying vec2 vUv;
+    uniform sampler2D map;
+    uniform float time;
+    void main() {
+      vec4 centerColor = texture2D(map, vUv);
+      vec4 leftColor = texture2D(map, vUv + vec2(-0.01, 0.0));
+      vec4 rightColor = texture2D(map, vUv + vec2(0.01, 0.0));
+      vec4 topColor = texture2D(map, vUv + vec2(0.0, 0.01));
+      vec4 bottomColor = texture2D(map, vUv + vec2(0.0, -0.01));
+      gl_FragColor = centerColor;
+      
+      // if(centerColor.a > 0.0) {
+      //   gl_FragColor = centerColor;
+      // } else if(leftColor.a > 0.0 || rightColor.a > 0.0 || topColor.a > 0.0 || bottomColor.a > 0.0) {
+      //   vec4 avgColor = (leftColor + rightColor + topColor + bottomColor) / 4.0;
+      //   gl_FragColor = vec4(avgColor.rgb, 1.0);  // Average color for blur effect
+      // } else {
+      //   discard;
+      // }
+    }
+  `;
     this.mesh = new THREE.Mesh(planeGeometry, planeMaterial);
+
+    const shaderMaterial = new THREE.ShaderMaterial({
+      uniforms: {
+        map: { value: videoTexture },
+      },
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
+      side: THREE.DoubleSide,
+      transparent: true,
+    });
+
+    this.mesh.material = shaderMaterial;
+
+    // this.mesh = new THREE.Mesh(planeGeometry, planeMaterial);
     this.mesh.position.set(position.x, 1, position.z);
 
     video.muted = true;
 
     scene.add(this.mesh);
     video.play();
-
-
-    this.light = new THREE.PointLight(0xffffff, 1, 100);
-    this.light.position.set(position.x, position.y + 5, position.z);
-    scene.add(this.light);
-
-    document.getElementById("editEmissive").addEventListener("input", function(event) {
-      const color = event.target.value;
-      if (/^#[0-9A-F]{6}$/i.test(color)) {
-        // this.mesh.material.emissive.set(color);
-        planeMaterial.emissive.set(color);  // This color will be added on top of the texture.
-
-      }
-    });
-    
-
   }
 
-
-
   syncPositionWithPlayer(player) {
-    this.mesh.position.set(player.boxBody.position.x - 1, 1, player.boxBody.position.z);
-    this.light.position.set(player.boxBody.position.x, player.boxBody.position.y + 5, player.boxBody.position.z);
+    this.mesh.position.set(player.boxBody.position.x - 2, 1, player.boxBody.position.z);
   }
 
   rotate(direction) {
